@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Grade Tracker</string>
+    <string name="select_subject">Select Subject</string>
+    <string-array name="grade_types">
+        <item>Prelim</item>
+        <item>Midterm</item>
+        <item>Final</item>
+    </string-array>
+</resources>
