@@ -140,9 +140,9 @@ class SubjectDetailActivity : AppCompatActivity() {
         }
 
         fabAddGrade.setOnClickListener {
-            if (validateInputs()) {
-                saveGrade()
-            }
+            // No longer launch AddGradeActivity. Grade adding is handled in this activity.
+            // Optionally, you can scroll to the grade input or show a message.
+            // Example: etGrade.requestFocus()
         }
     }
 
@@ -332,11 +332,9 @@ class SubjectDetailActivity : AppCompatActivity() {
         }
 
         fabAddGrade.setOnClickListener {
-            val intent = Intent(this, AddGradeActivity::class.java).apply {
-                putExtra("subject_id", subjectId)
-                putExtra("subject_name", subjectName)
-            }
-            startActivity(intent)
+            // No longer launch AddGradeActivity. Grade adding is handled in this activity.
+            // Optionally, you can scroll to the grade input or show a message.
+            // Example: etGrade.requestFocus()
         }
     }
 

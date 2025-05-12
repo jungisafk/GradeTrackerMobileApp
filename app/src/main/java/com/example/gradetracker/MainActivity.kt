@@ -2,8 +2,6 @@ package com.example.gradetracker
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,16 +10,13 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.example.gradetracker.models.Subject
 import com.example.gradetracker.utils.DialogHelper
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var dbHelper: DatabaseHelper
     private lateinit var lvSubjects: RecyclerView
     private lateinit var chart: LineChart
-    private lateinit var fabAddGrade: FloatingActionButton
     private lateinit var subjectAdapter: SubjectRecyclerAdapter
     private var subjectList: List<Subject> = listOf()
 
@@ -40,7 +35,6 @@ class MainActivity : AppCompatActivity() {
         dbHelper = DatabaseHelper(this)
         lvSubjects = findViewById(R.id.lvSubjects)
         chart = findViewById(R.id.chart)
-        fabAddGrade = findViewById(R.id.fabAddGrade)
     }
 
     private fun setupRecyclerViews() {
@@ -66,6 +60,7 @@ class MainActivity : AppCompatActivity() {
         try {
             loadSubjects()
             updateChart()
+            updateGPA()
         } catch (e: Exception) {
             DialogHelper.showErrorDialog(this, "Failed to load data: ${e.message}")
         } finally {
@@ -115,6 +110,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun updateGPA() {
+        val cursor = dbHelper.getAllGrades()
+        var sum = 0.0
+        var count = 0
+        while (cursor.moveToNext()) {
+            sum += cursor.getDouble(cursor.getColumnIndexOrThrow("grade"))
+            count++
+        }
+        cursor.close()
+        val gpa = if (count > 0) sum / count else 0.0
+        val tvGPA = findViewById<android.widget.TextView>(R.id.tvGPA)
+        tvGPA.text = "GPA: %.2f".format(gpa)
+    }
+
     private fun showSubjectDetails(subject: Subject) {
         val intent = Intent(this, SubjectDetailActivity::class.java).apply {
             putExtra("subject_id", subject.id)
@@ -146,10 +155,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> false
             }
-        }
-
-        fabAddGrade.setOnClickListener {
-            startActivity(Intent(this, AddGradeActivity::class.java))
         }
     }
 
